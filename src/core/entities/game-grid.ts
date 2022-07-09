@@ -1,5 +1,4 @@
 import { Ensure } from "../services/ensure";
-import { Guard } from "../services/guard";
 import { GameGridCell, GameGridCellContent } from "./game-grid-cell";
 import { Point2D } from "./point";
 

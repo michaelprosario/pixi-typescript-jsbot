@@ -52,8 +52,6 @@ export class GridBot implements ISprite {
     }
 
     moveForward() {
-        console.log("move forward");
-        // put bot into state to move 
         this.currentBehavior = this.moveBehavior;
     }
 }

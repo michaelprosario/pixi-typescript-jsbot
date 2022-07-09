@@ -1,5 +1,4 @@
 import { Sprite } from "@pixi/sprite";
-import { ObservablePoint } from "pixi.js";
 import { GridBot } from "../../core/entities/grid-bot";
 import { BotDirection } from "../../core/enums/bot-direction";
 

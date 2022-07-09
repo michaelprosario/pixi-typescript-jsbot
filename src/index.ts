@@ -76,7 +76,7 @@ window.onload = async (): Promise<void> => {
     let gridBotView = new GridBotView(gridBot);
     gridBotView.start();
 
-    /*
+    
     let gameGrid = new GameGrid(30, 20);
     createTestGrid2(gameGrid);
     for (let gridX = 0; gridX < gameGrid.width; gridX++) {
@@ -84,12 +84,12 @@ window.onload = async (): Promise<void> => {
             drawWallsIfTheyExist(gameGrid, gridX, gridY, graphics, colorScheme);
         }
     }
-    */
+    
 
     app.stage.addChild(gridBotView.sprite);
     app.stage.addChild(graphics);
 
-    //resizeCanvas();
+    resizeCanvas();
     app.stage.interactive = true;
 
     let elapsed = 0.0;
