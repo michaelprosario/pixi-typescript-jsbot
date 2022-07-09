@@ -1,4 +1,5 @@
 import { BotDirection } from "../enums/bot-direction";
+import { ISprite, ISpriteBehavior } from "../interfaces/interfaces";
 
 export class GridBotSetup {
     constructor(
@@ -8,19 +9,6 @@ export class GridBotSetup {
     ) { }
 }
 
-export interface ISprite {
-    currentBehavior: ISpriteBehavior | undefined;
-    start(): void;
-    update(): void;
-    finish(): void;
-}
-
-export interface ISpriteBehavior {
-    start(sprite: ISprite): void;
-    update(sprite: ISprite): void;
-    finish(sprite: ISprite): void;
-}
-
 export class GridBot implements ISprite {
     moveRight() {
         this.direction++;
@@ -28,7 +16,7 @@ export class GridBot implements ISprite {
             this.direction = 0;
         }
     }
-    
+
     moveLeft() {
         this.direction--;
         if (this.direction < 0) {

@@ -1,4 +1,5 @@
-import { GridBot, ISprite, ISpriteBehavior } from '../../core/entities/grid-bot';
+import { GridBot } from '../../core/entities/grid-bot';
+import { ISprite, ISpriteBehavior } from '../../core/interfaces/interfaces';
 
 export class GridBotIdleBehavior implements ISpriteBehavior {
     start(sprite: ISprite): void {

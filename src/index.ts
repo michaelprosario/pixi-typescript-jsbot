@@ -4,7 +4,7 @@ import { GameConstants } from "./presentation/game-constants"
 import { MathService } from "./core/services/math-service"
 import { GameGrid } from "./core/entities/game-grid";
 import { GameGridCell, GameGridCellContent } from "./core/entities/game-grid-cell";
-import { GridBot, GridBotSetup, ISprite, ISpriteBehavior } from "./core/entities/grid-bot";
+import { GridBot, GridBotSetup } from "./core/entities/grid-bot";
 import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
 import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
 import { GridBotView } from "./presentation/grid-bot/grid-bot-view";

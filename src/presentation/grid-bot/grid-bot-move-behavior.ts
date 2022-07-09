@@ -1,5 +1,6 @@
-import { GridBot, ISprite, ISpriteBehavior } from '../../core/entities/grid-bot';
+import { GridBot } from '../../core/entities/grid-bot';
 import { BotDirection } from '../../core/enums/bot-direction';
+import { ISprite, ISpriteBehavior } from '../../core/interfaces/interfaces';
 import { Ensure } from '../../core/services/ensure';
 
 export class GridBotMoveBehavior implements ISpriteBehavior {
