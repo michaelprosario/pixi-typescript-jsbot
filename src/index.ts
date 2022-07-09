@@ -1,10 +1,13 @@
 import { Application, Loader, Graphics } from "pixi.js";
 import "./style.css";
 import { GameConstants } from "./presentation/game-constants"
+import { MathService } from "./core/services/math-service"
 import { GameGrid } from "./core/entities/game-grid";
 import { GameGridCell, GameGridCellContent } from "./core/entities/game-grid-cell";
-import { Point2D } from "./core/entities/point";
-import { BreadthFirstSearchService } from "./core/services/breadth-first-search-service";
+import { GridBot, GridBotSetup, ISprite, ISpriteBehavior } from "./core/entities/grid-bot";
+import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
+import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
+import { GridBotView } from "./presentation/grid-bot/grid-bot-view";
 
 declare const VERSION: string;
 
@@ -27,25 +30,24 @@ function createTestGrid(gameGrid: GameGrid) {
     }
 }
 
-/**
- * Returns a random integer between min (inclusive) and max (inclusive).
- * The value is no lower than min (or the next integer greater than min
- * if min isn't an integer) and no greater than max (or the next integer
- * lower than max if max isn't an integer).
- * Using Math.round() will give you a non-uniform distribution!
- */
-function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function createTestGrid2(gameGrid: GameGrid) {
     for (let i = 0; i < 200; i++) {
-        let x = getRandomInt(0, 29);
-        let y = getRandomInt(0, 19);
-
+        let x = MathService.getRandomInt(0, 29);
+        let y = MathService.getRandomInt(0, 19);
         gameGrid.setGridCell(x, y, GameGridCellContent.Wall);
+    }
+
+    for (let x = 0; x < 5; x++) {
+        for (let y = 0; y < 5; y++) {
+            gameGrid.setGridCell(x, y, GameGridCellContent.Empty);
+        }
+    }
+
+    for (let x = 25; x < 30; x++) {
+        for (let y = 15; y < 20; y++) {
+            gameGrid.setGridCell(x, y, GameGridCellContent.Empty);
+        }
     }
 }
 
@@ -55,45 +57,49 @@ const app = new Application({
     height: gameHeight,
 });
 
+
 window.onload = async (): Promise<void> => {
-    await loadGameAssets();
 
     let colorScheme = [0x161032, 0xfaff81, 0xffc53a, 0xe06d06, 0xb26700];
 
     document.body.appendChild(app.view);
 
+    const graphics = new Graphics();
+
+    let gridBot = new GridBot();
+
+    gridBot.setupBot(new GridBotSetup(0, 0, GameConstants.gridHeight));
+    gridBot.currentBehavior = new GridBotIdleBehavior();
+    gridBot.moveBehavior = new GridBotMoveBehavior();
+    gridBot.start();
+
+    let gridBotView = new GridBotView(gridBot);
+    gridBotView.start();
+
+    /*
     let gameGrid = new GameGrid(30, 20);
     createTestGrid2(gameGrid);
-
-    let service = new BreadthFirstSearchService();
-
-    let start = new Point2D(0, 0);
-    let end = new Point2D(29, 19);
-
-    gameGrid.setGridCell(end.x, end.y, GameGridCellContent.Empty);
-
-    let response = service.execute(gameGrid, start, end);
-
-    const graphics = new Graphics();
     for (let gridX = 0; gridX < gameGrid.width; gridX++) {
         for (let gridY = 0; gridY < gameGrid.height; gridY++) {
             drawWallsIfTheyExist(gameGrid, gridX, gridY, graphics, colorScheme);
         }
     }
+    */
 
-    for (let cell of response) {
-        let x = cell.col * GameConstants.gridWidth;
-        let y = cell.row * GameConstants.gridHeight;
-
-        graphics.lineStyle(2, colorScheme[2], 1);
-        graphics.beginFill(colorScheme[3]);
-        graphics.drawRect(x, y, GameConstants.gridWidth, GameConstants.gridHeight);
-        graphics.endFill();
-    }
-
+    app.stage.addChild(gridBotView.sprite);
     app.stage.addChild(graphics);
-    resizeCanvas();
+
+    //resizeCanvas();
     app.stage.interactive = true;
+
+    let elapsed = 0.0;
+    app.ticker.add((delta) => {
+        elapsed += delta;
+
+        gridBot.update();
+        gridBotView.update()
+
+    });
 };
 
 function drawWallsIfTheyExist(gameGrid: GameGrid, gridX: number, gridY: number, graphics: Graphics, colorScheme: number[]) {
@@ -107,24 +113,6 @@ function drawWallsIfTheyExist(gameGrid: GameGrid, gridX: number, gridY: number, 
         graphics.drawRect(x, y, GameConstants.gridWidth, GameConstants.gridHeight);
         graphics.endFill();
     }
-}
-
-async function loadGameAssets(): Promise<void> {
-    return new Promise((res, rej) => {
-        const loader = Loader.shared;
-        loader.add("rabbit", "./assets/simpleSpriteSheet.json");
-        loader.add("pixie", "./assets/spine-assets/pixie.json");
-
-        loader.onComplete.once(() => {
-            res();
-        });
-
-        loader.onError.once(() => {
-            rej();
-        });
-
-        loader.load();
-    });
 }
 
 function resizeCanvas(): void {

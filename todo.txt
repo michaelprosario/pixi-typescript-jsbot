@@ -1,0 +1,5 @@
+- move bot forward
+- draw the bot
+x - move bot easy
+- tween the bot
+- draw the bot
