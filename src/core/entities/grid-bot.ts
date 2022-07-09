@@ -10,6 +10,16 @@ export class GridBotSetup {
 }
 
 export class GridBot implements ISprite {
+    currentBehavior: ISpriteBehavior | undefined;
+    direction: BotDirection = BotDirection.East;
+    gridCellWidth: number = 25;
+    gridX: number = 0;
+    gridY: number = 0;
+    idleBehavior: ISpriteBehavior | undefined;
+    moveBehavior: ISpriteBehavior | undefined;
+    x: number = 0;
+    y: number = 0;
+
     moveRight() {
         this.direction++;
         if (this.direction > 3) {
@@ -33,20 +43,10 @@ export class GridBot implements ISprite {
 
     finish(): void { }
 
-    currentBehavior: ISpriteBehavior | undefined;
-    direction: BotDirection = BotDirection.East;
-    gridX: number = 0;
-    gridY: number = 0;
-    gridCellWidth: number = 25;
-    x: number = 0;
-    y: number = 0;
-    moveBehavior: ISpriteBehavior | undefined;
-    idleBehavior: ISpriteBehavior | undefined;
-
     setupBot(setup: GridBotSetup): void {
+        this.gridCellWidth = setup.gridCellWidth;
         this.gridX = setup.x;
         this.gridY = setup.y;
-        this.gridCellWidth = setup.gridCellWidth;
         this.x = this.gridCellWidth * this.gridX;
         this.y = this.gridCellWidth * this.gridY;
     }

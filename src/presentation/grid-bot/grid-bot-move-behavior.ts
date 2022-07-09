@@ -14,13 +14,17 @@ export class GridBotMoveBehavior implements ISpriteBehavior {
         let gridBot = sprite as GridBot;
         if (gridBot.direction === BotDirection.North) {
             gridBot.y -= gridBot.gridCellWidth;
+            gridBot.gridY--;
         }
         else if (gridBot.direction === BotDirection.South) {
             gridBot.y += gridBot.gridCellWidth;
+            gridBot.gridY++;
         } else if (gridBot.direction === BotDirection.East) {
             gridBot.x += gridBot.gridCellWidth;
+            gridBot.gridX++;
         } else if (gridBot.direction === BotDirection.West) {
             gridBot.x -= gridBot.gridCellWidth;
+            gridBot.x--;
         } else {
             throw new Error("GridBotMoveBehavior / update / direction must be defined");
         }
