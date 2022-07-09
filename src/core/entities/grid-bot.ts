@@ -1,10 +1,4 @@
-
-export enum BotDirection {
-    North = 0,
-    East = 1,
-    South = 2,
-    West = 3
-}
+import { BotDirection } from "../enums/bot-direction";
 
 export class GridBotSetup {
     constructor(
@@ -28,6 +22,20 @@ export interface ISpriteBehavior {
 }
 
 export class GridBot implements ISprite {
+    moveRight() {
+        this.direction++;
+        if (this.direction > 3) {
+            this.direction = 0;
+        }
+    }
+    
+    moveLeft() {
+        this.direction--;
+        if (this.direction < 0) {
+            this.direction = 3;
+        }
+    }
+
     start(): void {
     }
 
