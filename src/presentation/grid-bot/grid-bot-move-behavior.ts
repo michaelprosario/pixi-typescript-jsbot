@@ -8,7 +8,7 @@ export class GridBotMoveBehavior implements ISpriteBehavior {
     }
 
     update(sprite: ISprite): void {
-        console.log('move update', sprite);
+
         Ensure.objectNotNull(sprite, "sprite is required");
 
         let gridBot = sprite as GridBot;

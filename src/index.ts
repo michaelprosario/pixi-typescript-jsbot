@@ -108,7 +108,7 @@ window.onload = async (): Promise<void> => {
         }
     }
 
-    bot.execute(gridBot, 1000)
+    bot.execute(gridBot, 100)
     app.stage.interactive = true;
 
     let elapsed = 0.0;
