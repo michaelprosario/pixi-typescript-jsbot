@@ -12,4 +12,9 @@ export class MathService {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+    static degreesToRadians(degrees: number) {
+        var pi = Math.PI;
+        return degrees * (pi / 180);
+    }
 }

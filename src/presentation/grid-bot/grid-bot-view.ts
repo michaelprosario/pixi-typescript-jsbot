@@ -1,6 +1,5 @@
 import { Sprite } from "@pixi/sprite";
 import { GridBot } from "../../core/entities/grid-bot";
-import { BotDirection } from "../../core/enums/bot-direction";
 
 export class GridBotView {
     start() {
@@ -10,12 +9,17 @@ export class GridBotView {
             }
 
             if (keyEventArgs.key === 'a') {
-                this.gridBot.moveLeft();
+                this.gridBot.moveLeft(45);
             }
 
             if (keyEventArgs.key === 'd') {
-                this.gridBot.moveRight();
+                this.gridBot.moveRight(45);
             }
+
+            if (keyEventArgs.key === 's') {
+                this.gridBot.moveForward(-12);
+            }
+
         });
     }
     sprite: Sprite;
@@ -33,14 +37,6 @@ export class GridBotView {
         this.sprite.width = this.gridBot.gridCellWidth;
         this.sprite.height = this.gridBot.gridCellWidth;
 
-        if (this.gridBot.direction === BotDirection.East) {
-            this.sprite.angle = 0;
-        } else if (this.gridBot.direction === BotDirection.West) {
-            this.sprite.angle = -180;
-        } else if (this.gridBot.direction === BotDirection.North) {
-            this.sprite.angle = -90;
-        } else if (this.gridBot.direction === BotDirection.South) {
-            this.sprite.angle = 90;
-        }
+        this.sprite.angle = this.gridBot.heading;
     }
 }

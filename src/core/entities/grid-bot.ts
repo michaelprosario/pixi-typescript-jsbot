@@ -1,5 +1,4 @@
 import { GameConstants } from "../../presentation/game-constants";
-import { BotDirection } from "../enums/bot-direction";
 import { ISprite, ISpriteBehavior } from "../interfaces/interfaces";
 
 export class GridBotSetup {
@@ -12,28 +11,23 @@ export class GridBotSetup {
 
 export class GridBot implements ISprite {
     currentBehavior: ISpriteBehavior | undefined;
-    direction: BotDirection = BotDirection.East;
     forwardDelta: number = GameConstants.gridWidth;
     gridCellWidth: number = GameConstants.gridWidth;
     gridX: number = 0;
     gridY: number = 0;
+    heading: number = 0;
     idleBehavior: ISpriteBehavior | undefined;
     moveBehavior: ISpriteBehavior | undefined;
     x: number = 0;
     y: number = 0;
 
-    moveRight() {
-        this.direction++;
-        if (this.direction > 3) {
-            this.direction = 0;
-        }
+
+    moveRight(angle: number) {
+        this.heading += angle;
     }
 
-    moveLeft() {
-        this.direction--;
-        if (this.direction < 0) {
-            this.direction = 3;
-        }
+    moveLeft(angle: number) {
+        this.heading -= angle;
     }
 
     start(): void {
