@@ -12,24 +12,25 @@ export class GridBotMoveBehavior implements ISpriteBehavior {
         Ensure.objectNotNull(sprite, "sprite is required");
 
         let gridBot = sprite as GridBot;
+        let deltaY: number = gridBot.forwardDelta;
         if (gridBot.direction === BotDirection.North) {
-            gridBot.y -= gridBot.gridCellWidth;
+            gridBot.y -= deltaY;
             gridBot.gridY--;
         }
         else if (gridBot.direction === BotDirection.South) {
-            gridBot.y += gridBot.gridCellWidth;
+            gridBot.y += deltaY;
             gridBot.gridY++;
         } else if (gridBot.direction === BotDirection.East) {
-            gridBot.x += gridBot.gridCellWidth;
+            gridBot.x += deltaY;
             gridBot.gridX++;
         } else if (gridBot.direction === BotDirection.West) {
-            gridBot.x -= gridBot.gridCellWidth;
+            gridBot.x -= deltaY;
             gridBot.x--;
         } else {
             throw new Error("GridBotMoveBehavior / update / direction must be defined");
         }
 
-        gridBot.currentBehavior = gridBot.idleBehavior
+        gridBot.currentBehavior = gridBot.idleBehavior;
     }
 
     finish(sprite: ISprite): void {

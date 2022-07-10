@@ -1,3 +1,4 @@
+import { GameConstants } from "../../presentation/game-constants";
 import { BotDirection } from "../enums/bot-direction";
 import { ISprite, ISpriteBehavior } from "../interfaces/interfaces";
 
@@ -12,7 +13,8 @@ export class GridBotSetup {
 export class GridBot implements ISprite {
     currentBehavior: ISpriteBehavior | undefined;
     direction: BotDirection = BotDirection.East;
-    gridCellWidth: number = 25;
+    forwardDelta: number = GameConstants.gridWidth;
+    gridCellWidth: number = GameConstants.gridWidth;
     gridX: number = 0;
     gridY: number = 0;
     idleBehavior: ISpriteBehavior | undefined;
@@ -51,7 +53,8 @@ export class GridBot implements ISprite {
         this.y = this.gridCellWidth * this.gridY;
     }
 
-    moveForward() {
+    moveForward(delta: number) {
         this.currentBehavior = this.moveBehavior;
+        this.forwardDelta = delta;
     }
 }

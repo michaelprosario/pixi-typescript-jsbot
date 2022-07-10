@@ -6,7 +6,7 @@ export class GridBotView {
     start() {
         document.addEventListener('keydown', keyEventArgs => {
             if (keyEventArgs.key === 'w') {
-                this.gridBot.moveForward();
+                this.gridBot.moveForward(12);
             }
 
             if (keyEventArgs.key === 'a') {
