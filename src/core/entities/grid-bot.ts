@@ -18,16 +18,28 @@ export class GridBot implements ISprite {
     heading: number = 0;
     idleBehavior: ISpriteBehavior | undefined;
     moveBehavior: ISpriteBehavior | undefined;
+    turnBehavior: ISpriteBehavior | undefined;
+
     x: number = 0;
     y: number = 0;
+    isMovingLeft: boolean = false;
+    turnAngle: number = 0;
 
+    moveForward(delta: number) {
+        this.currentBehavior = this.moveBehavior;
+        this.forwardDelta = delta;
+    }
 
     moveRight(angle: number) {
-        this.heading += angle;
+        this.isMovingLeft = false;
+        this.turnAngle = angle;
+        this.currentBehavior = this.turnBehavior;
     }
 
     moveLeft(angle: number) {
-        this.heading -= angle;
+        this.isMovingLeft = true;
+        this.turnAngle = angle;
+        this.currentBehavior = this.turnBehavior;
     }
 
     start(): void {
@@ -45,10 +57,5 @@ export class GridBot implements ISprite {
         this.gridY = setup.y;
         this.x = this.gridCellWidth * this.gridX;
         this.y = this.gridCellWidth * this.gridY;
-    }
-
-    moveForward(delta: number) {
-        this.currentBehavior = this.moveBehavior;
-        this.forwardDelta = delta;
     }
 }

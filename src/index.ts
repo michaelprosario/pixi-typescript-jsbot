@@ -7,6 +7,8 @@ import { GameGridCell, GameGridCellContent } from "./core/entities/game-grid-cel
 import { GridBot, GridBotSetup } from "./core/entities/grid-bot";
 import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
 import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
+import { GridBotTurnBehavior } from "./presentation/grid-bot/grid-bot-turn-behavior";
+
 import { GridBotView } from "./presentation/grid-bot/grid-bot-view";
 import { GridBotCommander } from "./core/entities/grid-bot-commander";
 
@@ -72,6 +74,7 @@ window.onload = async (): Promise<void> => {
     gridBot.setupBot(new GridBotSetup(10, 10, GameConstants.gridHeight));
     gridBot.currentBehavior = new GridBotIdleBehavior();
     gridBot.moveBehavior = new GridBotMoveBehavior();
+    gridBot.turnBehavior = new GridBotTurnBehavior();
     gridBot.start();
 
     let gridBotView = new GridBotView(gridBot);
@@ -92,23 +95,24 @@ window.onload = async (): Promise<void> => {
 
     resizeCanvas();
 
-    let bot = new GridBotCommander();
+    let timeBox = 5000;
+    let bot = gridBot;
     for (var count4 = 0; count4 < 10; count4++) {
         for (var count = 0; count < 5; count++) {
             bot.moveRight(30);
-            bot.moveForward(25);
+            bot.moveForward(timeBox);
         }
         for (var count2 = 0; count2 < 5; count2++) {
             bot.moveLeft(30);
-            bot.moveForward(25);
+            bot.moveForward(timeBox);
         }
         for (var count3 = 0; count3 < 5; count3++) {
             bot.moveRight(30);
-            bot.moveForward(25);
+            bot.moveForward(timeBox);
         }
     }
 
-    bot.execute(gridBot, 100)
+    //bot.execute(gridBot, 100)
     app.stage.interactive = true;
 
     let elapsed = 0.0;
