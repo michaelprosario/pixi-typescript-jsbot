@@ -66,15 +66,17 @@ window.onload = async (): Promise<void> => {
 
     const graphics = new Graphics();
 
-    let gridBot = new GridBot();
+    let bot = new GridBot();
 
-    gridBot.setupBot(new GridBotSetup(0, 0, GameConstants.gridHeight));
-    gridBot.currentBehavior = new GridBotIdleBehavior();
-    gridBot.moveBehavior = new GridBotMoveBehavior();
-    gridBot.start();
+    bot.setupBot(new GridBotSetup(0, 0, GameConstants.gridHeight));
+    bot.currentBehavior = new GridBotIdleBehavior();
+    bot.moveBehavior = new GridBotMoveBehavior();
+    bot.start();
 
-    let gridBotView = new GridBotView(gridBot);
+    let gridBotView = new GridBotView(bot);
     gridBotView.start();
+
+
 
 
     let gameGrid = new GameGrid(30, 20);
@@ -86,10 +88,20 @@ window.onload = async (): Promise<void> => {
     }
 
 
+
     app.stage.addChild(gridBotView.sprite);
     app.stage.addChild(graphics);
 
     //resizeCanvas();
+
+    for (var count = 0; count < 10; count++) {
+        bot.moveForward(25);
+        bot.moveRight(20);
+    }
+    for (var count2 = 0; count2 < 10; count2++) {
+        bot.moveForward(25);
+        bot.moveLeft(20);
+    }
 
     app.stage.interactive = true;
 
@@ -97,7 +109,7 @@ window.onload = async (): Promise<void> => {
     app.ticker.add((delta) => {
         elapsed += delta;
 
-        gridBot.update();
+        bot.update();
         gridBotView.update()
 
     });
