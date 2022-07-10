@@ -8,6 +8,7 @@ import { GridBot, GridBotSetup } from "./core/entities/grid-bot";
 import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
 import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
 import { GridBotView } from "./presentation/grid-bot/grid-bot-view";
+import { GridBotCommander } from "./core/entities/grid-bot-commander";
 
 declare const VERSION: string;
 
@@ -66,50 +67,55 @@ window.onload = async (): Promise<void> => {
 
     const graphics = new Graphics();
 
-    let bot = new GridBot();
+    let gridBot = new GridBot();
 
-    bot.setupBot(new GridBotSetup(0, 0, GameConstants.gridHeight));
-    bot.currentBehavior = new GridBotIdleBehavior();
-    bot.moveBehavior = new GridBotMoveBehavior();
-    bot.start();
+    gridBot.setupBot(new GridBotSetup(10, 10, GameConstants.gridHeight));
+    gridBot.currentBehavior = new GridBotIdleBehavior();
+    gridBot.moveBehavior = new GridBotMoveBehavior();
+    gridBot.start();
 
-    let gridBotView = new GridBotView(bot);
+    let gridBotView = new GridBotView(gridBot);
     gridBotView.start();
 
-
-
-
     let gameGrid = new GameGrid(30, 20);
+    /*
     createTestGrid2(gameGrid);
     for (let gridX = 0; gridX < gameGrid.width; gridX++) {
         for (let gridY = 0; gridY < gameGrid.height; gridY++) {
             drawWallsIfTheyExist(gameGrid, gridX, gridY, graphics, colorScheme);
         }
     }
-
-
+    */
 
     app.stage.addChild(gridBotView.sprite);
     app.stage.addChild(graphics);
 
-    //resizeCanvas();
+    resizeCanvas();
 
-    for (var count = 0; count < 10; count++) {
-        bot.moveForward(25);
-        bot.moveRight(20);
-    }
-    for (var count2 = 0; count2 < 10; count2++) {
-        bot.moveForward(25);
-        bot.moveLeft(20);
+    let bot = new GridBotCommander();
+    for (var count4 = 0; count4 < 10; count4++) {
+        for (var count = 0; count < 5; count++) {
+            bot.moveRight(30);
+            bot.moveForward(25);
+        }
+        for (var count2 = 0; count2 < 5; count2++) {
+            bot.moveLeft(30);
+            bot.moveForward(25);
+        }
+        for (var count3 = 0; count3 < 5; count3++) {
+            bot.moveRight(30);
+            bot.moveForward(25);
+        }
     }
 
+    bot.execute(gridBot, 1000)
     app.stage.interactive = true;
 
     let elapsed = 0.0;
     app.ticker.add((delta) => {
         elapsed += delta;
 
-        bot.update();
+        gridBot.update();
         gridBotView.update()
 
     });
