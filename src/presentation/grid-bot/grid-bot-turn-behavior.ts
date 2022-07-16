@@ -21,11 +21,7 @@ export class GridBotTurnBehavior implements ISpriteBehavior {
             gridBot.heading += gridBot.turnAngle;
         }
 
-        setTimeout(() => {
-            gridBot.currentBehavior = gridBot.idleBehavior;
-        }, 1000);
-
-        //gridBot.gridY--;
+        gridBot.currentBehavior = gridBot.idleBehavior;
     }
 
 }

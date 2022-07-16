@@ -8,9 +8,12 @@ import { GridBot, GridBotSetup } from "./core/entities/grid-bot";
 import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
 import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
 import { GridBotTurnBehavior } from "./presentation/grid-bot/grid-bot-turn-behavior";
-
+import * as ACORN from "./acorn_interpreter";
 import { GridBotView } from "./presentation/grid-bot/grid-bot-view";
-import { GridBotCommander } from "./core/entities/grid-bot-commander";
+
+function getBotCode() {
+    return 'var a=1; for(var i=0;i<4;i++){a*=i;} a;';
+}
 
 declare const VERSION: string;
 
@@ -95,24 +98,8 @@ window.onload = async (): Promise<void> => {
 
     resizeCanvas();
 
-    let timeBox = 5000;
-    let bot = gridBot;
-    for (var count4 = 0; count4 < 10; count4++) {
-        for (var count = 0; count < 5; count++) {
-            bot.moveRight(30);
-            bot.moveForward(timeBox);
-        }
-        for (var count2 = 0; count2 < 5; count2++) {
-            bot.moveLeft(30);
-            bot.moveForward(timeBox);
-        }
-        for (var count3 = 0; count3 < 5; count3++) {
-            bot.moveRight(30);
-            bot.moveForward(timeBox);
-        }
-    }
+    let timeBox = 20;
 
-    //bot.execute(gridBot, 100)
     app.stage.interactive = true;
 
     let elapsed = 0.0;
@@ -120,6 +107,13 @@ window.onload = async (): Promise<void> => {
         elapsed += delta;
         gridBot.update();
     });
+
+    setTimeout(() => {
+        let myCode = getBotCode();
+        
+        // @ts-ignore
+        myInterpreter = new ACORN.Interpreter(myCode);
+    }, 3000)
 };
 
 function drawWallsIfTheyExist(gameGrid: GameGrid, gridX: number, gridY: number, graphics: Graphics, colorScheme: number[]) {

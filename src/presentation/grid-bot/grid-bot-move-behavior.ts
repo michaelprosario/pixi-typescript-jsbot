@@ -14,7 +14,7 @@ export class GridBotMoveBehavior implements ISpriteBehavior {
         let gridBot = sprite as GridBot;
         let theta = MathService.degreesToRadians(gridBot.heading);
 
-        let r = 1;
+        let r = gridBot.forwardDelta;
 
         let deltaX = r * Math.cos(theta);
         let deltaY = r * Math.sin(theta);
@@ -22,14 +22,7 @@ export class GridBotMoveBehavior implements ISpriteBehavior {
         gridBot.x += deltaX;
         gridBot.y += deltaY;
 
-        setTimeout(() => {
-            gridBot.currentBehavior = gridBot.idleBehavior;
-        }, gridBot.forwardDelta);
-
-
-        //gridBot.gridY--;
-
-
+        gridBot.currentBehavior = gridBot.idleBehavior;
     }
 
     finish(sprite: ISprite): void {
