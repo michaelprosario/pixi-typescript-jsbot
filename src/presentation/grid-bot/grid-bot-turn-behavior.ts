@@ -4,6 +4,9 @@ import { Ensure } from '../../core/services/ensure';
 import { MathService } from '../../core/services/math-service';
 
 export class GridBotTurnBehavior implements ISpriteBehavior {
+    finish(sprite: ISprite): void {
+        throw new Error('Method not implemented.');
+    }
     start(sprite: ISprite): void {
     }
 
@@ -23,10 +26,6 @@ export class GridBotTurnBehavior implements ISpriteBehavior {
         }, 1000);
 
         //gridBot.gridY--;
-
-
     }
 
-    finish(sprite: ISprite): void {
-    }
 }

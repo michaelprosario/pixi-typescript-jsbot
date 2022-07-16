@@ -1,5 +1,5 @@
 import { GameConstants } from "../../presentation/game-constants";
-import { ISprite, ISpriteBehavior } from "../interfaces/interfaces";
+import { ISprite, ISpriteBehavior, IViewableSprite } from "../interfaces/interfaces";
 
 export class GridBotSetup {
     constructor(
@@ -13,6 +13,7 @@ export class GridBot implements ISprite {
     currentBehavior: ISpriteBehavior | undefined;
     forwardDelta: number = GameConstants.gridWidth;
     gridCellWidth: number = GameConstants.gridWidth;
+    gridView: IViewableSprite | undefined;
     gridX: number = 0;
     gridY: number = 0;
     heading: number = 0;
@@ -43,10 +44,12 @@ export class GridBot implements ISprite {
     }
 
     start(): void {
+        this.gridView?.start();
     }
 
     update(): void {
         this.currentBehavior?.update(this);
+        this.gridView?.update();
     }
 
     finish(): void { }
