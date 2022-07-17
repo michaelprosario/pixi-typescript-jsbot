@@ -8,11 +8,27 @@ import { GridBot, GridBotSetup } from "./core/entities/grid-bot";
 import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
 import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
 import { GridBotTurnBehavior } from "./presentation/grid-bot/grid-bot-turn-behavior";
-import * as ACORN from "./acorn_interpreter";
 import { GridBotView } from "./presentation/grid-bot/grid-bot-view";
+var Interpreter = require('js-interpreter');
 
 function getBotCode() {
-    return 'var a=1; for(var i=0;i<4;i++){a*=i;} a;';
+    return `
+    var timeBox = 20;
+    for (var count4 = 0; count4 < 10; count4++) {
+        for (var count = 0; count < 5; count++) {
+            moveRight(30);
+            moveForward(timeBox);
+        }
+        for (var count2 = 0; count2 < 5; count2++) {
+            moveLeft(30);
+            moveForward(timeBox);
+        }
+        for (var count3 = 0; count3 < 5; count3++) {
+            moveRight(30);
+            moveForward(timeBox);
+        }
+    }
+`
 }
 
 declare const VERSION: string;
@@ -63,7 +79,6 @@ const app = new Application({
     height: gameHeight,
 });
 
-
 window.onload = async (): Promise<void> => {
 
     let colorScheme = [0x161032, 0xfaff81, 0xffc53a, 0xe06d06, 0xb26700];
@@ -108,12 +123,31 @@ window.onload = async (): Promise<void> => {
         gridBot.update();
     });
 
-    setTimeout(() => {
-        let myCode = getBotCode();
-        
-        // @ts-ignore
-        myInterpreter = new ACORN.Interpreter(myCode);
-    }, 3000)
+    let botCode = getBotCode();
+
+    var runnerSetup = function (interpreter: any, globalObject: any) {
+        interpreter.setProperty(globalObject, 'url', String(location));
+
+        var moveForward = (delta: number) => { gridBot.moveForward(delta); };
+        var moveRight = (angle: number) => { gridBot.moveRight(angle); };
+        var moveLeft = (angle: number) => { gridBot.moveLeft(angle); };
+
+        interpreter.setProperty(globalObject, 'moveForward', interpreter.createNativeFunction(moveForward));
+        interpreter.setProperty(globalObject, 'moveRight', interpreter.createNativeFunction(moveRight));
+        interpreter.setProperty(globalObject, 'moveLeft', interpreter.createNativeFunction(moveLeft));
+    };
+
+    let myInterpreter = new Interpreter(botCode, runnerSetup);
+    function nextStep() {
+        if (myInterpreter.step()) {
+            window.setTimeout(nextStep, 20);
+        }
+    }
+    nextStep();
+
+
+
+
 };
 
 function drawWallsIfTheyExist(gameGrid: GameGrid, gridX: number, gridY: number, graphics: Graphics, colorScheme: number[]) {
