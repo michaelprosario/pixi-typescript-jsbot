@@ -86,16 +86,7 @@ window.onload = async (): Promise<void> => {
     document.body.appendChild(app.view);
 
     const graphics = new Graphics();
-
-
-    let gridBot = new GridBot();
-    gridBot.gridView = new GridBotView(gridBot);
-
-    gridBot.setupBot(new GridBotSetup(10, 10, GameConstants.gridHeight));
-    gridBot.currentBehavior = new GridBotIdleBehavior();
-    gridBot.moveBehavior = new GridBotMoveBehavior();
-    gridBot.turnBehavior = new GridBotTurnBehavior();
-    gridBot.start();
+    let gridBot = makeGridBot();
 
 
     let gameGrid = new GameGrid(30, 20);
@@ -113,8 +104,6 @@ window.onload = async (): Promise<void> => {
 
     resizeCanvas();
 
-    let timeBox = 20;
-
     app.stage.interactive = true;
 
     let elapsed = 0.0;
@@ -124,7 +113,17 @@ window.onload = async (): Promise<void> => {
     });
 
     let botCode = getBotCode();
+    let myInterpreter = setupJsRunner(gridBot, botCode);
 
+    function nextStep() {
+        if (myInterpreter.step()) {
+            window.setTimeout(nextStep, 20);
+        }
+    }
+    nextStep();
+};
+
+function setupJsRunner(gridBot: GridBot, botCode: string) {
     var runnerSetup = function (interpreter: any, globalObject: any) {
         interpreter.setProperty(globalObject, 'url', String(location));
 
@@ -137,18 +136,19 @@ window.onload = async (): Promise<void> => {
         interpreter.setProperty(globalObject, 'moveLeft', interpreter.createNativeFunction(moveLeft));
     };
 
-    let myInterpreter = new Interpreter(botCode, runnerSetup);
-    function nextStep() {
-        if (myInterpreter.step()) {
-            window.setTimeout(nextStep, 20);
-        }
-    }
-    nextStep();
+    return new Interpreter(botCode, runnerSetup);
+}
 
-
-
-
-};
+function makeGridBot() {
+    let gridBot = new GridBot();
+    gridBot.gridView = new GridBotView(gridBot);
+    gridBot.setupBot(new GridBotSetup(10, 10, GameConstants.gridHeight));
+    gridBot.currentBehavior = new GridBotIdleBehavior();
+    gridBot.moveBehavior = new GridBotMoveBehavior();
+    gridBot.turnBehavior = new GridBotTurnBehavior();
+    gridBot.start();
+    return gridBot;
+}
 
 function drawWallsIfTheyExist(gameGrid: GameGrid, gridX: number, gridY: number, graphics: Graphics, colorScheme: number[]) {
     let gridCell: GameGridCell = gameGrid.getCell(gridX, gridY);
