@@ -113,15 +113,18 @@ window.onload = async (): Promise<void> => {
     });
 
     let botCode = getBotCode();
-    let myInterpreter = setupJsRunner(gridBot, botCode);
+    let jsRunner = setupJsRunner(gridBot, botCode);
+    executeJsRunner(jsRunner);
+};
 
+function executeJsRunner(jsRunner: any) {
     function nextStep() {
-        if (myInterpreter.step()) {
+        if (jsRunner.step()) {
             window.setTimeout(nextStep, 20);
         }
     }
     nextStep();
-};
+}
 
 function setupJsRunner(gridBot: GridBot, botCode: string) {
     var runnerSetup = function (interpreter: any, globalObject: any) {
