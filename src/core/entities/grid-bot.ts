@@ -1,5 +1,5 @@
 import { GameConstants } from "../../presentation/game-constants";
-import { ISprite, ISpriteBehavior } from "../interfaces/interfaces";
+import { ISprite, ISpriteBehavior, IViewableSprite } from "../interfaces/interfaces";
 
 export class GridBotSetup {
     constructor(
@@ -10,31 +10,48 @@ export class GridBotSetup {
 }
 
 export class GridBot implements ISprite {
+
     currentBehavior: ISpriteBehavior | undefined;
     forwardDelta: number = GameConstants.gridWidth;
     gridCellWidth: number = GameConstants.gridWidth;
+    gridView: IViewableSprite | undefined;
     gridX: number = 0;
     gridY: number = 0;
     heading: number = 0;
-    idleBehavior: ISpriteBehavior | undefined;
-    moveBehavior: ISpriteBehavior | undefined;
+    isMovingLeft: boolean = false;
+    turnAngle: number = 0;
     x: number = 0;
     y: number = 0;
 
+    // behaviors ...
+    idleBehavior: ISpriteBehavior | undefined;
+    moveBehavior: ISpriteBehavior | undefined;
+    turnBehavior: ISpriteBehavior | undefined;
+
+    moveForward(delta: number) {
+        this.currentBehavior = this.moveBehavior;
+        this.forwardDelta = delta;
+    }
 
     moveRight(angle: number) {
-        this.heading += angle;
+        this.isMovingLeft = false;
+        this.turnAngle = angle;
+        this.currentBehavior = this.turnBehavior;
     }
 
     moveLeft(angle: number) {
-        this.heading -= angle;
+        this.isMovingLeft = true;
+        this.turnAngle = angle;
+        this.currentBehavior = this.turnBehavior;
     }
 
     start(): void {
+        this.gridView?.start();
     }
 
     update(): void {
         this.currentBehavior?.update(this);
+        this.gridView?.update();
     }
 
     finish(): void { }
@@ -45,10 +62,5 @@ export class GridBot implements ISprite {
         this.gridY = setup.y;
         this.x = this.gridCellWidth * this.gridX;
         this.y = this.gridCellWidth * this.gridY;
-    }
-
-    moveForward(delta: number) {
-        this.currentBehavior = this.moveBehavior;
-        this.forwardDelta = delta;
     }
 }

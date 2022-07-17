@@ -7,8 +7,29 @@ import { GameGridCell, GameGridCellContent } from "./core/entities/game-grid-cel
 import { GridBot, GridBotSetup } from "./core/entities/grid-bot";
 import { GridBotIdleBehavior } from "./presentation/grid-bot/grid-bot-idle-behavior";
 import { GridBotMoveBehavior } from "./presentation/grid-bot/grid-bot-move-behavior";
+import { GridBotTurnBehavior } from "./presentation/grid-bot/grid-bot-turn-behavior";
 import { GridBotView } from "./presentation/grid-bot/grid-bot-view";
-import { GridBotCommander } from "./core/entities/grid-bot-commander";
+var Interpreter = require('js-interpreter');
+
+function getBotCode() {
+    return `
+    var timeBox = 20;
+    for (var count4 = 0; count4 < 10; count4++) {
+        for (var count = 0; count < 5; count++) {
+            moveRight(30);
+            moveForward(timeBox);
+        }
+        for (var count2 = 0; count2 < 5; count2++) {
+            moveLeft(30);
+            moveForward(timeBox);
+        }
+        for (var count3 = 0; count3 < 5; count3++) {
+            moveRight(30);
+            moveForward(timeBox);
+        }
+    }
+`
+}
 
 declare const VERSION: string;
 
@@ -58,7 +79,6 @@ const app = new Application({
     height: gameHeight,
 });
 
-
 window.onload = async (): Promise<void> => {
 
     let colorScheme = [0x161032, 0xfaff81, 0xffc53a, 0xe06d06, 0xb26700];
@@ -66,16 +86,8 @@ window.onload = async (): Promise<void> => {
     document.body.appendChild(app.view);
 
     const graphics = new Graphics();
+    let gridBot = makeGridBot();
 
-    let gridBot = new GridBot();
-
-    gridBot.setupBot(new GridBotSetup(10, 10, GameConstants.gridHeight));
-    gridBot.currentBehavior = new GridBotIdleBehavior();
-    gridBot.moveBehavior = new GridBotMoveBehavior();
-    gridBot.start();
-
-    let gridBotView = new GridBotView(gridBot);
-    gridBotView.start();
 
     let gameGrid = new GameGrid(30, 20);
     /*
@@ -87,39 +99,59 @@ window.onload = async (): Promise<void> => {
     }
     */
 
-    app.stage.addChild(gridBotView.sprite);
     app.stage.addChild(graphics);
+    app.stage.addChild(gridBot.gridView?.getSprite());
 
     resizeCanvas();
 
-    let bot = new GridBotCommander();
-    for (var count4 = 0; count4 < 10; count4++) {
-        for (var count = 0; count < 5; count++) {
-            bot.moveRight(30);
-            bot.moveForward(25);
-        }
-        for (var count2 = 0; count2 < 5; count2++) {
-            bot.moveLeft(30);
-            bot.moveForward(25);
-        }
-        for (var count3 = 0; count3 < 5; count3++) {
-            bot.moveRight(30);
-            bot.moveForward(25);
-        }
-    }
-
-    bot.execute(gridBot, 100)
     app.stage.interactive = true;
 
     let elapsed = 0.0;
     app.ticker.add((delta) => {
         elapsed += delta;
-
         gridBot.update();
-        gridBotView.update()
-
     });
+
+    let botCode = getBotCode();
+    let jsRunner = setupJsRunner(gridBot, botCode);
+    executeJsRunner(jsRunner);
 };
+
+function executeJsRunner(jsRunner: any) {
+    function nextStep() {
+        if (jsRunner.step()) {
+            window.setTimeout(nextStep, 20);
+        }
+    }
+    nextStep();
+}
+
+function setupJsRunner(gridBot: GridBot, botCode: string) {
+    var runnerSetup = function (interpreter: any, globalObject: any) {
+        interpreter.setProperty(globalObject, 'url', String(location));
+
+        var moveForward = (delta: number) => { gridBot.moveForward(delta); };
+        var moveRight = (angle: number) => { gridBot.moveRight(angle); };
+        var moveLeft = (angle: number) => { gridBot.moveLeft(angle); };
+
+        interpreter.setProperty(globalObject, 'moveForward', interpreter.createNativeFunction(moveForward));
+        interpreter.setProperty(globalObject, 'moveRight', interpreter.createNativeFunction(moveRight));
+        interpreter.setProperty(globalObject, 'moveLeft', interpreter.createNativeFunction(moveLeft));
+    };
+
+    return new Interpreter(botCode, runnerSetup);
+}
+
+function makeGridBot() {
+    let gridBot = new GridBot();
+    gridBot.gridView = new GridBotView(gridBot);
+    gridBot.setupBot(new GridBotSetup(10, 10, GameConstants.gridHeight));
+    gridBot.currentBehavior = new GridBotIdleBehavior();
+    gridBot.moveBehavior = new GridBotMoveBehavior();
+    gridBot.turnBehavior = new GridBotTurnBehavior();
+    gridBot.start();
+    return gridBot;
+}
 
 function drawWallsIfTheyExist(gameGrid: GameGrid, gridX: number, gridY: number, graphics: Graphics, colorScheme: number[]) {
     let gridCell: GameGridCell = gameGrid.getCell(gridX, gridY);

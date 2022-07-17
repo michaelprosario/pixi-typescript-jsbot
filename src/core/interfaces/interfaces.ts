@@ -1,8 +1,14 @@
+import { isMapIterator } from "util/types";
+
 export interface ISprite {
     currentBehavior: ISpriteBehavior | undefined;
     start(): void;
     update(): void;
     finish(): void;
+}
+
+export interface IViewableSprite extends ISprite {
+    getSprite(): any;
 }
 
 export interface ISpriteBehavior {
