@@ -10,6 +10,7 @@ export class GridBotSetup {
 }
 
 export class GridBot implements ISprite {
+
     currentBehavior: ISpriteBehavior | undefined;
     forwardDelta: number = GameConstants.gridWidth;
     gridCellWidth: number = GameConstants.gridWidth;
@@ -17,14 +18,15 @@ export class GridBot implements ISprite {
     gridX: number = 0;
     gridY: number = 0;
     heading: number = 0;
+    isMovingLeft: boolean = false;
+    turnAngle: number = 0;
+    x: number = 0;
+    y: number = 0;
+
+    // behaviors ...
     idleBehavior: ISpriteBehavior | undefined;
     moveBehavior: ISpriteBehavior | undefined;
     turnBehavior: ISpriteBehavior | undefined;
-
-    x: number = 0;
-    y: number = 0;
-    isMovingLeft: boolean = false;
-    turnAngle: number = 0;
 
     moveForward(delta: number) {
         this.currentBehavior = this.moveBehavior;
