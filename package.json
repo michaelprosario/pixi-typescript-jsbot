@@ -30,7 +30,7 @@
         "core-js": "^3.23.4",
         "js-interpreter": "^2.3.1",
         "pixi-spine": "^3.0.13",
-        "pixi.js": "^6.2.2",
+        "pixi.js": "^7.0.3",
         "regenerator-runtime": "^0.13.9"
     },
     "devDependencies": {
